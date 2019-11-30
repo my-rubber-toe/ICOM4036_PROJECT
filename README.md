@@ -15,5 +15,5 @@ members of the team are equally contributing to the project.
 
 ## Team Members
 
-- Roberto Guzmán
-- Christian Manuel
+- Roberto Y. Guzmán Ortiz
+- Christian M. Ruiz Cruz
