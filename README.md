@@ -53,6 +53,3 @@ The language will allow to perform `CRUD` operations such as:
 4. update_client()
 5. update_server()
 6. etc...
-=======
-- Roberto Y. Guzmán Ortiz
-- Christian M. Ruiz Cruz
