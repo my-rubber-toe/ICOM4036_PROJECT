@@ -1,5 +1,6 @@
 import ply.yacc as yacc
-
+import ply.lex as lex
+from dao.env_controller import EnvController
 
 tokens = (
     "INT",
@@ -16,7 +17,7 @@ def t_INT(t):
     # Check Port --> Min Port: 1024, Max Port: 65535, Port: 0 Kernel will auto assign port
     return t
 def t_KEYWORD(t):
-    r"create|server|client|send|connect|to|all|receive|delete|external|info|from"
+    r"create|server|client|send|connect|at|to|all|receive|delete|external|info|from"
     return t
 def t_EQUALS(t):
     r"="
@@ -33,7 +34,6 @@ def t_error(t):
     t.lexer.skip(1)
 
 # Build the lexer
-import ply.lex as lex
 lexer = lex.lex()
 
 # lex.input("var1 = \"woah\" 33")
@@ -42,68 +42,93 @@ lexer = lex.lex()
 #     print(tok.type, tok.value)
 
 variables = { }
+environment = EnvController()
 
 def p_statement_create_or_delete_client_server(p):
     'statement : KEYWORD KEYWORD STRING'
     if p[1] == "delete":
         if p[2] == "client":
-            print("Deleting the client '%s'..." % p[3])
+            client_name = p[3]
+            # Run delete client here: OK
+            environment.delete_client_or_server(client_name)
         elif p[2] == "server":
-            print("Deleting the server '%s'..." % p[3])
+            server_name = p[3]
+            # Run delete server here: OK
+            environment.delete_client_or_server(server_name)
         else:
             print("Error in delete client")
     elif p[1] == "create":
         if p[2] == "client":
-            print("Creating a new client '%s'..." % p[3])
+            client_name = p[3]
+            # Run create client here: OK
+            environment.create_client(client_name)
     else:
-        print("Error in ")
+        print("ERROR in create/delete server or client...")
 
 def p_statement_create_server(p):
-    'statement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT'
-    if p[2] == "server":
-        print("Creating a new server '%s'..." % p[3])
-    elif p[2] == "client":
-        print("Creating a new client '%s'..." % p[3])
+    """statement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT
+                 | KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING
+    """
+    if p[1] == "create" and p[2] == "server":
+        server_name = p[3]
+        ip = p[5]
+        port = p[7]
+        # Run create server here: OK
+        environment.create_server(server_name, ip, port)
     else:
-        print("Not a function.")
+        print("ERROR in creating server...")
 
 def p_statement_info(p):
     'statement : KEYWORD STRING'
     if p[1] == "info":
-        print("Getting %s's information..." % p[2])
+        # Run info here: OK
+        variable = p[2]
+        environment.info(variable)
     else:
-        print("Not a function.")
+        print("ERROR in getting variable info...")
 
 def p_statement_variable_int(p):
     'statement : STRING EQUALS INT'
-    variables[p[1]] = p[3]
-    print("Stored...", variables)
+    # Run var int assignment here: OK
+    environment.var_assign(p[1],p[3])
 
 def p_statement_variable_string(p):
     'statement : STRING EQUALS QUOTE STRING QUOTE'
-    variables[p[1]] = p[4]
-    print("Stored...", variables)
+    
+    # Run var int assignment here: OK
+    environment.var_assign(p[1], p[4])
+
+def p_statement_send_data(p):
+    'statement : STRING KEYWORD STRING QUOTE STRING QUOTE'
+    if p[2] == "send":
+        sender = p[1]
+        reciever = p[3]
+        message = p[5]
+        environment.send_message(sender, reciever, message)
+        print("Sending %s '%s' from %s..." % (p[3], p[5], p[1]))
+    else:
+        print("ERROR in send data...")
 
 def p_statement_local_conn(p):
     'statement : STRING KEYWORD STRING'
     if p[2] == "connect":
         print("Connecting %s to %s..." % (p[1], p[3]))
     else:
-        print("Error in local connection...")
+        print("ERROR in local connection...")
+
+def p_statement_external_conn(p):
+    'statement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT'
+    if p[2] == "connect":
+        print("Connecting %s to %s:%d..." % (p[1], p[4],p[7]))
+    else:
+        print("ERROR in external connection...")
 
 def p_statement_external_conn_no_port(p):
     'statement : STRING KEYWORD QUOTE STRING QUOTE'
     if p[2] == "connect":
         print("Connecting %s to %s:80..." % (p[1], p[4]))
     else:
-        print("Error in external connection...")
-
-def p_statement_external_conn(p):
-    'statement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT'
-    if p[2] == "connect":
-        print("Connecting %s to %s:%d..." % (p[1], p[4],p[6]))
-    else:
-        print("Error in external connection...")
+        print("ERROR in external connection...")
 
 def p_statement_expr(p):
     'statement : expression'
@@ -137,7 +162,7 @@ parser = yacc.yacc()
 
 while True:
     try:
-        s = input('parser > ')   # use input() on Python 3
+        s = input('simply_connected > ')   # use input() on Python 3
     except EOFError:
         break
     lexer.input(s)
