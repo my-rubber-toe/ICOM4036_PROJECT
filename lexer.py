@@ -1,3 +1,5 @@
+import ply.yacc as yacc
+
 
 tokens = (
     "INT",
@@ -73,7 +75,6 @@ def p_expression_varname(p):
 def p_error(p):
     print("Syntax error at '%s'" % p.value)
 
-import ply.yacc as yacc
 parser = yacc.yacc()
 
 while True:

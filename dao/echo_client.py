@@ -17,25 +17,27 @@ class EchoClient:
     def info(self):
         return self.__repr__()
 
-    def add_external_connection(self, address):
+    def add_external_connection(self, connection_name, address, port):
         pass
 
     def send_message(self, message, server: EchoServer):
-        ip, port = server.server_address
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        sock.connect((ip, port))
-        sock.sendall(bytes(message,'ascii'))
-        print(f'Client({self.client_id}): {message}')
-
-        response = str(sock.recv(1024), 'ascii')
-        sock.close()
-        self.logger.debug(f'Successfully sent message to server={server.server_id}')
-        return True
+        try:
+            self.logger.debug(f'sending message to server={server.server_id}, message={message}')
+            ip, port = server.server_address
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((ip, port))
+            sock.sendall(bytes(message,'ascii'))
+            print(f'Client({self.client_id}): {message}')
+            response = str(sock.recv(1024), 'ascii')
+            sock.close()
+            self.logger.debug(f'recieved response from server={server.server_id}, response={response}')
+        except:
+            print(f'Unable to send message to {server}')
 
     def close_connection(self, server: EchoServer):
         return self.connections.popitem(server)
     
     
     def __repr__(self):
-        return f'Client<client_id={self.client_id}, connections={self.connections}>'
+        return f'Client<client_id={self.client_id}>'
 
