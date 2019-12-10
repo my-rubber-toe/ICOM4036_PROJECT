@@ -9,28 +9,28 @@ import threading
 logging.basicConfig(filename= "server_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
 
 class EchoRequestHandler(socketserver.BaseRequestHandler):
-    
+
     def handle(self):
         # Echo the back to the client
         data = self.request.recv(1024)
         self.request.sendall(data)
-        print(data)
+        
         return
     
 class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
     
-    def __init__(self, server_address):
+    def __init__(self, server_address:tuple):
         # socketserver.TCPServer.__init__(self, server_address, handler_class)
-        
-        # Super constructor
+
         super().__init__(server_address, EchoRequestHandler)
         self.server_id = uuid.uuid4()
         self.logger = logging.getLogger(f'EchoServer({self.server_id})')
         self.logger.debug(f'server created ip={self.server_address[0]} port={self.server_address[1]}')
-        self.peers = []
         self.is_running = False
     
     def finish_request(self, request, client_address):
+        print(f'Server handled request from {client_address}')
+        self.logger.debug(f'request handled')
         return super().finish_request(request, client_address)
     
     def run_me(self):
@@ -49,9 +49,20 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
         """Establish a connection with a peer server"""
         pass
 
-    def message_peer(self):
+    def message_peer(self, message, peer):
         """Send message to a peer server"""
-        pass
+        try:
+            self.logger.debug(f'sending message to peer={peer.server_id}, message={message}')
+            ip, port = peer.server_address
+            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+            sock.connect((ip, port))
+            sock.sendall(bytes(message,'ascii'))
+            print(f'Server({self.server_id}): {message}')
+            response = str(sock.recv(1024), 'ascii')
+            sock.close()
+            self.logger.debug(f'recieved response from peer={peer.server_id}, response={response}')
+        except:
+            print(f'Unable to send message to {peer}')
 
     def __repr__(self):
         ip, port = self.server_address
