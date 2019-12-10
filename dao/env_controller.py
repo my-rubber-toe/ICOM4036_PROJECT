@@ -1,13 +1,19 @@
 
 from dao.echo_server import EchoServer
 from dao.echo_client import EchoClient
+import requests
 
+import logging
+
+logging.basicConfig(filename= "env_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
 
 class EnvController:
     """Object to control the language environment"""
     def __init__(self):
+        self.logger = logging.getLogger('EnvController')
         self.env = dict()
-
+    
+    
     def create_server(self, server_name, ip, port):
         """Set new server to the environment"""
         address = (ip, port)
@@ -42,9 +48,6 @@ class EnvController:
         if(not self.env[var2]):
             print(f'Error: Unasigned variable {var2}=None')
             return
-        
-        type1 = type(self.env[var1])
-        type2 = type(self.env[var2])
 
         if(isinstance(self.env[var1], EchoClient)  and isinstance(self.env[var2], EchoServer)):
             client : EchoClient = self.env[var1]
@@ -67,6 +70,24 @@ class EnvController:
         except Exception:
             print(f'Unassigned variablle: variable \"{var_name}\" is not assigned')
     
+    def connect_external(self, var):
+        var_value = self.verify_var(var)
+        if(not var_value): # If there is not a variable
+            self.logger.debug(f'connecting to {var}')
+            req = requests.get(url=var)
+            print(f'Response from {var}: {req.status_code}')
+        else:
+            self.logger.debug(f'connecting to {var_value}')
+            req = requests.get(url=var_value)
+            print(f'Response from {var_value}: {req.status_code}')
+
+
+    def verify_var(self, var):
+        try:
+            return self.env[var]
+        except KeyError:
+            return None
+                
     def __repr__(self):
         return self.env
         

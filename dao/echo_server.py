@@ -5,8 +5,8 @@ import uuid
 import socket
 import threading
 
+logging.basicConfig(filename= "env_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
 
-logging.basicConfig(filename= "server_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
 
 class EchoRequestHandler(socketserver.BaseRequestHandler):
 
