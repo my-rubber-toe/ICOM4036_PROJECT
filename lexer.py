@@ -47,31 +47,39 @@ def p_statement_create_or_delete_client_server(p):
     if p[1] == "delete":
         if p[2] == "client":
             print("Deleting the client '%s'..." % p[3])
+            client_name = p[3]
+            # Run delete client here
         elif p[2] == "server":
             print("Deleting the server '%s'..." % p[3])
+            server_name = p[3]
+            # Run delete server here
         else:
             print("Error in delete client")
     elif p[1] == "create":
         if p[2] == "client":
             print("Creating a new client '%s'..." % p[3])
+            client_name = p[3]
+            # Run create client here
     else:
-        print("Error in ")
+        print("ERROR in create/delete server or client...")
 
 def p_statement_create_server(p):
     'statement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT'
-    if p[2] == "server":
+    if p[1] == "create" and p[2] == "server":
         print("Creating a new server '%s'..." % p[3])
-    elif p[2] == "client":
-        print("Creating a new client '%s'..." % p[3])
+        server_name = p[3]
+        address = p[5]
+        port = p[7]
+        # Run create server here
     else:
-        print("Not a function.")
+        print("ERROR in creating server...")
 
 def p_statement_info(p):
     'statement : KEYWORD STRING'
     if p[1] == "info":
         print("Getting %s's information..." % p[2])
     else:
-        print("Not a function.")
+        print("ERROR in getting info...")
 
 def p_statement_variable_int(p):
     'statement : STRING EQUALS INT'
@@ -88,28 +96,28 @@ def p_statement_send_data(p):
     if p[2] == "send":
         print("Sending %s '%s' from %s..." % (p[3], p[5], p[1]))
     else:
-        print("Error in send data...")
+        print("ERROR in send data...")
 
 def p_statement_local_conn(p):
     'statement : STRING KEYWORD STRING'
     if p[2] == "connect":
         print("Connecting %s to %s..." % (p[1], p[3]))
     else:
-        print("Error in local connection...")
+        print("ERROR in local connection...")
 
 def p_statement_external_conn(p):
     'statement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT'
     if p[2] == "connect":
         print("Connecting %s to %s:%d..." % (p[1], p[4],p[7]))
     else:
-        print("Error in external connection...")
+        print("ERROR in external connection...")
 
 def p_statement_external_conn_no_port(p):
     'statement : STRING KEYWORD QUOTE STRING QUOTE'
     if p[2] == "connect":
         print("Connecting %s to %s:80..." % (p[1], p[4]))
     else:
-        print("Error in external connection...")
+        print("ERROR in external connection...")
 
 def p_statement_expr(p):
     'statement : expression'
