@@ -14,7 +14,6 @@ class EchoRequestHandler(socketserver.BaseRequestHandler):
         # Echo the back to the client
         data = self.request.recv(1024)
         self.request.sendall(data)
-        print(data)
         return
     
 class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
@@ -29,7 +28,7 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
         self.is_running = False
     
     def finish_request(self, request, client_address):
-        
+        print(f'Server handled request from')
         return super().finish_request(request, client_address)
     
     def run_me(self):
