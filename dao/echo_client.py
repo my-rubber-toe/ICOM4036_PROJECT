@@ -11,17 +11,13 @@ class EchoClient:
     def __init__(self):
         self.client_id = uuid.uuid4()
         self.logger = logging.getLogger(f'Client({self.client_id})')
-        self.connections = dict()
-
+        self.external_connections = dict()
         self.logger.debug('client created')
     
     def info(self):
         return self.__repr__()
-        
-    def add_local_connection(self, server: EchoServer):
-        self.connections.__setitem__(server, server)
 
-    def add_external_connection(self, address: tuple):
+    def add_external_connection(self, address):
         pass
 
     def send_message(self, message, server: EchoServer):
@@ -35,10 +31,6 @@ class EchoClient:
         sock.close()
         self.logger.debug(f'Successfully sent message to server={server.server_id}')
         return True
-
-        
-
-
 
     def close_connection(self, server: EchoServer):
         return self.connections.popitem(server)

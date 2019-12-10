@@ -21,16 +21,15 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
     
     def __init__(self, server_address):
         # socketserver.TCPServer.__init__(self, server_address, handler_class)
-        
-        # Super constructor
+
         super().__init__(server_address, EchoRequestHandler)
         self.server_id = uuid.uuid4()
         self.logger = logging.getLogger(f'EchoServer({self.server_id})')
         self.logger.debug(f'server created ip={self.server_address[0]} port={self.server_address[1]}')
-        self.peers = []
         self.is_running = False
     
     def finish_request(self, request, client_address):
+        
         return super().finish_request(request, client_address)
     
     def run_me(self):
