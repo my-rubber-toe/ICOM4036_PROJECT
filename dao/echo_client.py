@@ -11,7 +11,7 @@ class EchoClient:
     def __init__(self):
         self.client_id = uuid.uuid4()
         self.logger = logging.getLogger(f'Client({self.client_id})')
-        self.external_connections = dict()
+        self.connection_history=[]
         self.logger.debug('client created')
     
     def info(self):
@@ -23,6 +23,7 @@ class EchoClient:
             ip, port = server.server_address
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))
+            self.connection_history.append(server.server_id)
             sock.sendall(bytes(message,'ascii'))
             print(f'Client({self.client_id}): {message}')
             response = str(sock.recv(1024), 'ascii')
@@ -36,5 +37,5 @@ class EchoClient:
     
     
     def __repr__(self):
-        return f'Client<client_id={self.client_id}>'
+        return f'EchoClient<client_id={self.client_id}, connection_history={self.connection_history}>'
 

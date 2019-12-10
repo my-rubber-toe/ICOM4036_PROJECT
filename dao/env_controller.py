@@ -12,27 +12,60 @@ class EnvController:
     def __init__(self):
         self.logger = logging.getLogger('EnvController')
         self.env = dict()
-    
-    
+        
     def create_server(self, server_name, ip, port):
-        """Set new server to the environment"""
-        address = (ip, port)
-        if(not (server_name in self.env)):
+        """Set new server to the environment. If port = 0, then kernel will take care of the port"""
+        var_ip = self.verify_var(ip)
+        var_port = self.verify_var(port)
+
+        the_ip = ip
+        the_port = port
+
+        if(var_port is None and var_ip is None):
+            the_ip = "localhost"
+            the_port = 0
+        
+        if(var_ip):
+            the_ip = var_ip
+        if(var_port):
+            the_port = var_port
+            
+        try:
+            if(port == 0): print(f'Random port will be assigned.')
+            address = (the_ip, the_port)
             new_server = EchoServer(address)
             new_server.run_me()
             self.env[server_name] = new_server
-            return
-    
-        self.env.__delitem__(server_name)
-        self.env[server_name] = EchoServer(address).run_me()
+        except Exception as e:
+            if(isinstance(e, TypeError)):
+                print(f'ERROR: Unrecognized variable.')
+            if(isinstance(e, OSError)):
+                print(f'ERROR: {e}.')
+            
     
     def create_client(self,client_name):
-        """Set a new client to the environment."""
+        """Set or update client to the environment."""
+        if(self.verify_var(client_name)):
+            print(f'ERROR: client with the name \"{client_name}\" already exists.')
+            return
         self.env[client_name] = EchoClient()
     
-    def delete_object(self, object_name):
-        """Remove Object from environment"""
-        return self.env.popitem(object_name)
+    def delete_client_or_server(self, var_name):
+        """Remove server or client from environment"""
+        value = self.verify_var(var_name)
+        if(isinstance(value, EchoServer)):
+            value.stop_me()
+            removed_server = self.env.pop(var_name)
+            self.logger.debug(f'server removed server_id={removed_server.server_id}')
+            return removed_server
+        elif(isinstance(value, EchoClient)):
+            removed_client = self.env.pop(var_name)
+            self.logger.debug(f'client removed client_id={removed_client.client_id}')
+            return removed_client
+        elif(isinstance(value, (int, str))):
+            print(f'ERROR: Variable {var_name} is not of type: \"EchoServer\" or \"EchoClient\" ')
+        else:
+            print(f'ERROR: Unrecognized variable \"{var_name}\"')
     
     def var_assign(self, var_name, value):
         if(not isinstance(value,(str, int))):
@@ -41,34 +74,32 @@ class EnvController:
         
         self.env[var_name] = value    
 
-    def send_message(self, var1, var2, message):
-        if(not self.env[var1]):
-            print(f'Error: Unasigned variable {var1}=None')
+    def send_message(self, sender, receiver, message):
+        the_sender = self.verify_var(sender)
+        the_receiver = self.verify_var(receiver)
+        if(not the_sender):
+            print(f'Error: Unasigned variable {sender}=None')
             return
-        if(not self.env[var2]):
-            print(f'Error: Unasigned variable {var2}=None')
+        if(not the_receiver):
+            print(f'Error: Unasigned variable {receiver}=None')
             return
-
-        if(isinstance(self.env[var1], EchoClient)  and isinstance(self.env[var2], EchoServer)):
-            client : EchoClient = self.env[var1]
-            server : EchoServer = self.env[var2]
+    
+        if(isinstance(the_sender, EchoClient)  and isinstance(the_receiver, EchoServer)):
+            client : EchoClient = the_sender
+            server : EchoServer = the_receiver
             client.send_message(message, server)
 
-        elif(isinstance(self.env[var1], EchoServer)  and isinstance(self.env[var2], EchoServer)):
-            s1 : EchoServer = self.env[var1]
-            s2 : EchoServer = self.env[var2]
+        elif(isinstance(the_sender, EchoServer)  and isinstance(the_receiver, EchoServer)):
+            s1 : EchoServer = the_sender
+            s2 : EchoServer = the_receiver
             s1.message_peer(message, s2)
 
     def info(self, var_name):
-        try:
-            x = self.env[var_name]
-            if(isinstance(x,(str, int))):
-                print(x)
-            elif(isinstance(x,(EchoClient, EchoServer))):
-                print(x)
-
-        except Exception:
-            print(f'Unassigned variablle: variable \"{var_name}\" is not assigned')
+        something = self.verify_var(var_name)
+        if(something):
+            print(something)
+        else:
+            print(f'ERROR: Unrecognized variable: {var_name}')
     
     def connect_external(self, var):
         var_value = self.verify_var(var)

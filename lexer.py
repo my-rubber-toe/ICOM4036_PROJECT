@@ -1,5 +1,6 @@
 import ply.yacc as yacc
 import ply.lex as lex
+from dao.env_controller import EnvController
 
 tokens = (
     "INT",
@@ -41,59 +42,69 @@ lexer = lex.lex()
 #     print(tok.type, tok.value)
 
 variables = { }
+environment = EnvController()
 
 def p_statement_create_or_delete_client_server(p):
     'statement : KEYWORD KEYWORD STRING'
     if p[1] == "delete":
         if p[2] == "client":
-            print("Deleting the client '%s'..." % p[3])
             client_name = p[3]
-            # Run delete client here
+            # Run delete client here: OK
+            environment.delete_client_or_server(client_name)
         elif p[2] == "server":
-            print("Deleting the server '%s'..." % p[3])
             server_name = p[3]
-            # Run delete server here
+            # Run delete server here: OK
+            environment.delete_client_or_server(server_name)
         else:
             print("Error in delete client")
     elif p[1] == "create":
         if p[2] == "client":
-            print("Creating a new client '%s'..." % p[3])
             client_name = p[3]
-            # Run create client here
+            # Run create client here: OK
+            environment.create_client(client_name)
     else:
         print("ERROR in create/delete server or client...")
 
 def p_statement_create_server(p):
-    'statement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT'
+    """statement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT
+                 | KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING
+    """
     if p[1] == "create" and p[2] == "server":
-        print("Creating a new server '%s'..." % p[3])
         server_name = p[3]
-        address = p[5]
+        ip = p[5]
         port = p[7]
-        # Run create server here
+        # Run create server here: OK
+        environment.create_server(server_name, ip, port)
     else:
         print("ERROR in creating server...")
 
 def p_statement_info(p):
     'statement : KEYWORD STRING'
     if p[1] == "info":
-        print("Getting %s's information..." % p[2])
+        # Run info here: OK
+        variable = p[2]
+        environment.info(variable)
     else:
-        print("ERROR in getting info...")
+        print("ERROR in getting variable info...")
 
 def p_statement_variable_int(p):
     'statement : STRING EQUALS INT'
-    variables[p[1]] = p[3]
-    print("Stored...", variables)
+    # Run var int assignment here: OK
+    environment.var_assign(p[1],p[3])
 
 def p_statement_variable_string(p):
     'statement : STRING EQUALS QUOTE STRING QUOTE'
-    variables[p[1]] = p[4]
-    print("Stored...", variables)
+    
+    # Run var int assignment here: OK
+    environment.var_assign(p[1], p[4])
 
 def p_statement_send_data(p):
     'statement : STRING KEYWORD STRING QUOTE STRING QUOTE'
     if p[2] == "send":
+        sender = p[1]
+        reciever = p[3]
+        message = p[5]
+        environment.send_message(sender, reciever, message)
         print("Sending %s '%s' from %s..." % (p[3], p[5], p[1]))
     else:
         print("ERROR in send data...")
@@ -151,7 +162,7 @@ parser = yacc.yacc()
 
 while True:
     try:
-        s = input('parser > ')   # use input() on Python 3
+        s = input('simply_connected > ')   # use input() on Python 3
     except EOFError:
         break
     lexer.input(s)
