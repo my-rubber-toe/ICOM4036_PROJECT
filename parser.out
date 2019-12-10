@@ -2,65 +2,246 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 
 Grammar
 
-Rule 0     S' -> expression
-Rule 1     expression -> KEYWORD
-Rule 2     statement -> VARNAME EQUALS QUOTE VARNAME QUOTE
-Rule 3     statement -> expression
-Rule 4     expression -> INT
-Rule 5     expression -> VARNAME
+Rule 0     S' -> statement
+Rule 1     statement -> KEYWORD KEYWORD STRING
+Rule 2     statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT
+Rule 3     statement -> KEYWORD STRING
+Rule 4     statement -> STRING EQUALS INT
+Rule 5     statement -> STRING EQUALS QUOTE STRING QUOTE
+Rule 6     statement -> STRING KEYWORD STRING
+Rule 7     statement -> STRING KEYWORD QUOTE STRING QUOTE
+Rule 8     statement -> STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT
+Rule 9     statement -> expression
+Rule 10    expression -> INT
+Rule 11    expression -> KEYWORD
+Rule 12    expression -> STRING
 
 Terminals, with rules where they appear
 
-EQUALS               : 2
-INT                  : 4
-KEYWORD              : 1
-QUOTE                : 2 2
-VARNAME              : 2 2 5
+EQUALS               : 4 5
+INT                  : 2 4 8 10
+KEYWORD              : 1 1 2 2 3 6 7 8 8 11
+QUOTE                : 2 2 5 5 7 7 8 8
+STRING               : 1 2 2 3 4 5 5 6 6 7 7 8 8 12
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 3 0
-statement            : 
+expression           : 9
+statement            : 0
 
 Parsing method: LALR
 
 state 0
 
-    (0) S' -> . expression
-    (1) expression -> . KEYWORD
-    (4) expression -> . INT
-    (5) expression -> . VARNAME
+    (0) S' -> . statement
+    (1) statement -> . KEYWORD KEYWORD STRING
+    (2) statement -> . KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT
+    (3) statement -> . KEYWORD STRING
+    (4) statement -> . STRING EQUALS INT
+    (5) statement -> . STRING EQUALS QUOTE STRING QUOTE
+    (6) statement -> . STRING KEYWORD STRING
+    (7) statement -> . STRING KEYWORD QUOTE STRING QUOTE
+    (8) statement -> . STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT
+    (9) statement -> . expression
+    (10) expression -> . INT
+    (11) expression -> . KEYWORD
+    (12) expression -> . STRING
 
     KEYWORD         shift and go to state 2
-    INT             shift and go to state 3
-    VARNAME         shift and go to state 4
+    STRING          shift and go to state 3
+    INT             shift and go to state 4
 
-    expression                     shift and go to state 1
+    statement                      shift and go to state 1
+    expression                     shift and go to state 5
 
 state 1
 
-    (0) S' -> expression .
+    (0) S' -> statement .
 
 
 
 state 2
 
-    (1) expression -> KEYWORD .
+    (1) statement -> KEYWORD . KEYWORD STRING
+    (2) statement -> KEYWORD . KEYWORD STRING QUOTE STRING QUOTE INT
+    (3) statement -> KEYWORD . STRING
+    (11) expression -> KEYWORD .
 
-    $end            reduce using rule 1 (expression -> KEYWORD .)
+    KEYWORD         shift and go to state 6
+    STRING          shift and go to state 7
+    $end            reduce using rule 11 (expression -> KEYWORD .)
 
 
 state 3
 
-    (4) expression -> INT .
+    (4) statement -> STRING . EQUALS INT
+    (5) statement -> STRING . EQUALS QUOTE STRING QUOTE
+    (6) statement -> STRING . KEYWORD STRING
+    (7) statement -> STRING . KEYWORD QUOTE STRING QUOTE
+    (8) statement -> STRING . KEYWORD QUOTE STRING QUOTE KEYWORD INT
+    (12) expression -> STRING .
 
-    $end            reduce using rule 4 (expression -> INT .)
+    EQUALS          shift and go to state 8
+    KEYWORD         shift and go to state 9
+    $end            reduce using rule 12 (expression -> STRING .)
 
 
 state 4
 
-    (5) expression -> VARNAME .
+    (10) expression -> INT .
 
-    $end            reduce using rule 5 (expression -> VARNAME .)
+    $end            reduce using rule 10 (expression -> INT .)
+
+
+state 5
+
+    (9) statement -> expression .
+
+    $end            reduce using rule 9 (statement -> expression .)
+
+
+state 6
+
+    (1) statement -> KEYWORD KEYWORD . STRING
+    (2) statement -> KEYWORD KEYWORD . STRING QUOTE STRING QUOTE INT
+
+    STRING          shift and go to state 10
+
+
+state 7
+
+    (3) statement -> KEYWORD STRING .
+
+    $end            reduce using rule 3 (statement -> KEYWORD STRING .)
+
+
+state 8
+
+    (4) statement -> STRING EQUALS . INT
+    (5) statement -> STRING EQUALS . QUOTE STRING QUOTE
+
+    INT             shift and go to state 11
+    QUOTE           shift and go to state 12
+
+
+state 9
+
+    (6) statement -> STRING KEYWORD . STRING
+    (7) statement -> STRING KEYWORD . QUOTE STRING QUOTE
+    (8) statement -> STRING KEYWORD . QUOTE STRING QUOTE KEYWORD INT
+
+    STRING          shift and go to state 13
+    QUOTE           shift and go to state 14
+
+
+state 10
+
+    (1) statement -> KEYWORD KEYWORD STRING .
+    (2) statement -> KEYWORD KEYWORD STRING . QUOTE STRING QUOTE INT
+
+    $end            reduce using rule 1 (statement -> KEYWORD KEYWORD STRING .)
+    QUOTE           shift and go to state 15
+
+
+state 11
+
+    (4) statement -> STRING EQUALS INT .
+
+    $end            reduce using rule 4 (statement -> STRING EQUALS INT .)
+
+
+state 12
+
+    (5) statement -> STRING EQUALS QUOTE . STRING QUOTE
+
+    STRING          shift and go to state 16
+
+
+state 13
+
+    (6) statement -> STRING KEYWORD STRING .
+
+    $end            reduce using rule 6 (statement -> STRING KEYWORD STRING .)
+
+
+state 14
+
+    (7) statement -> STRING KEYWORD QUOTE . STRING QUOTE
+    (8) statement -> STRING KEYWORD QUOTE . STRING QUOTE KEYWORD INT
+
+    STRING          shift and go to state 17
+
+
+state 15
+
+    (2) statement -> KEYWORD KEYWORD STRING QUOTE . STRING QUOTE INT
+
+    STRING          shift and go to state 18
+
+
+state 16
+
+    (5) statement -> STRING EQUALS QUOTE STRING . QUOTE
+
+    QUOTE           shift and go to state 19
+
+
+state 17
+
+    (7) statement -> STRING KEYWORD QUOTE STRING . QUOTE
+    (8) statement -> STRING KEYWORD QUOTE STRING . QUOTE KEYWORD INT
+
+    QUOTE           shift and go to state 20
+
+
+state 18
+
+    (2) statement -> KEYWORD KEYWORD STRING QUOTE STRING . QUOTE INT
+
+    QUOTE           shift and go to state 21
+
+
+state 19
+
+    (5) statement -> STRING EQUALS QUOTE STRING QUOTE .
+
+    $end            reduce using rule 5 (statement -> STRING EQUALS QUOTE STRING QUOTE .)
+
+
+state 20
+
+    (7) statement -> STRING KEYWORD QUOTE STRING QUOTE .
+    (8) statement -> STRING KEYWORD QUOTE STRING QUOTE . KEYWORD INT
+
+    $end            reduce using rule 7 (statement -> STRING KEYWORD QUOTE STRING QUOTE .)
+    KEYWORD         shift and go to state 22
+
+
+state 21
+
+    (2) statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE . INT
+
+    INT             shift and go to state 23
+
+
+state 22
+
+    (8) statement -> STRING KEYWORD QUOTE STRING QUOTE KEYWORD . INT
+
+    INT             shift and go to state 24
+
+
+state 23
+
+    (2) statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT .
+
+    $end            reduce using rule 2 (statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT .)
+
+
+state 24
+
+    (8) statement -> STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT .
+
+    $end            reduce using rule 8 (statement -> STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT .)
 
