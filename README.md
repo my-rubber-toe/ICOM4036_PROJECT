@@ -19,6 +19,7 @@ members of the team are equally contributing to the project.
 
 # Description
 
+<<<<<<< HEAD
 The programming language that we will be building consists of a combination of variable assignments, native functions and object notation similar to `JSON`.
 
 ## Variables
@@ -53,3 +54,42 @@ The language will allow to perform `CRUD` operations such as:
 4. update_client()
 5. update_server()
 6. etc...
+=======
+The programming language that we will be building consists of a combination of variable assignments and declarative language such as `SQL`.
+
+The language will allow to perform basic server connection an sned recieve basic data.
+
+***NOTE: Only basic operations will be made such as, local server to server connection and client connections performing some REST requests.***
+
+# Language Structure
+
+## Tokens
+- Integers
+  - regex: `\d+`
+- Strings
+  - regex: `duh... a string`
+- Vars
+  - regex: `[a-zA-Z_][a-zA-Z_0-9]*`
+
+- Keywords
+
+## Grammar
+
+## Operations
+- **Create**
+    - `create server myserver "ip_addr" port_nbr`
+    - `create client myclient server`
+    - `myclient connect myserver`
+
+- **Delete**
+    - `delete server myserver1 myserver2 myserver_n`
+    - `delete client myclient1 myclient2 myclient_n`
+
+- **External Connections**
+    - `myclient connect "addr_external_server"`
+        - Example: `myclient connect "www.google.com" at port port`
+
+- Variables
+    - `var1 = "some_str"`
+    - my_nbr = 1234
+>>>>>>> de24b265bff6f16bbe523e718830ab0a4c49b758
