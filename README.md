@@ -54,10 +54,5 @@ The language will allow to perform basic server connection an sned recieve basic
         - Example: `myclient connect "www.google.com" at port port`
 
 - Variables
-    - var1 = "some_str"
+    - `var1 = "some_str"`
     - my_nbr = 1234
-
-
-
-
-
