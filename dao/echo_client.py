@@ -4,7 +4,7 @@ from dao.echo_server import EchoServer
 import socket
 
 
-logging.basicConfig(filename= "server_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
+logging.basicConfig(filename= "env_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
 
 
 class EchoClient:
@@ -16,9 +16,6 @@ class EchoClient:
     
     def info(self):
         return self.__repr__()
-
-    def add_external_connection(self, connection_name, address, port):
-        pass
 
     def send_message(self, message, server: EchoServer):
         try:

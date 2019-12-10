@@ -30,29 +30,32 @@ The language will allow to perform basic server connection an sned recieve basic
 ## Tokens
 - Integers
   - regex: `\d+`
-- Strings
+- String
   - regex: `duh... a string`
 - Vars
   - regex: `[a-zA-Z_][a-zA-Z_0-9]*`
-
 - Keywords
-
+  - regex: `create|server|client|send|to|all|receive|delete|external|info|from`
 ## Grammar
 
 ## Operations
 - **Create**
     - `create server myserver "ip_addr" port_nbr`
-    - `create client myclient server`
-    - `myclient connect myserver`
-
+    - `create client myclient`
 - **Delete**
-    - `delete server myserver1 myserver2 myserver_n`
-    - `delete client myclient1 myclient2 myclient_n`
-
-- **External Connections**
+    - `delete server myserver`
+    - `delete client myclient`
+- **Local Connection**
+    - `myclient connect myserver`
+- **External Connection**
     - `myclient connect "addr_external_server"`
-        - Example: `myclient connect "www.google.com" at port port`
-
-- Variables
-    - `var1 = "some_str"`
-    - my_nbr = 1234
+        - Example: `myclient connect "www.google.com" at port`
+        - Example (default port is 80): `myclient connect "www.google.com"`
+- **Data Processing**
+    - `myserver send myclient "data"`
+- **Info**
+    - `info myserver`
+    - `info myclient`
+- **Variables**
+    - `var1 = "some string"`
+    - `port_number = 1234`
