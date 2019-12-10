@@ -1,5 +1,5 @@
 import ply.yacc as yacc
-
+import ply.lex as lex
 
 tokens = (
     "INT",
@@ -16,7 +16,7 @@ def t_INT(t):
     # Check Port --> Min Port: 1024, Max Port: 65535, Port: 0 Kernel will auto assign port
     return t
 def t_KEYWORD(t):
-    r"create|server|client|send|connect|to|all|receive|delete|external|info|from"
+    r"create|server|client|send|connect|at|to|all|receive|delete|external|info|from"
     return t
 def t_EQUALS(t):
     r"="
@@ -33,7 +33,6 @@ def t_error(t):
     t.lexer.skip(1)
 
 # Build the lexer
-import ply.lex as lex
 lexer = lex.lex()
 
 # lex.input("var1 = \"woah\" 33")
@@ -84,6 +83,13 @@ def p_statement_variable_string(p):
     variables[p[1]] = p[4]
     print("Stored...", variables)
 
+def p_statement_send_data(p):
+    'statement : STRING KEYWORD STRING QUOTE STRING QUOTE'
+    if p[2] == "send":
+        print("Sending %s '%s' from %s..." % (p[3], p[5], p[1]))
+    else:
+        print("Error in send data...")
+
 def p_statement_local_conn(p):
     'statement : STRING KEYWORD STRING'
     if p[2] == "connect":
@@ -91,17 +97,17 @@ def p_statement_local_conn(p):
     else:
         print("Error in local connection...")
 
+def p_statement_external_conn(p):
+    'statement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT'
+    if p[2] == "connect":
+        print("Connecting %s to %s:%d..." % (p[1], p[4],p[7]))
+    else:
+        print("Error in external connection...")
+
 def p_statement_external_conn_no_port(p):
     'statement : STRING KEYWORD QUOTE STRING QUOTE'
     if p[2] == "connect":
         print("Connecting %s to %s:80..." % (p[1], p[4]))
-    else:
-        print("Error in external connection...")
-
-def p_statement_external_conn(p):
-    'statement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT'
-    if p[2] == "connect":
-        print("Connecting %s to %s:%d..." % (p[1], p[4],p[6]))
     else:
         print("Error in external connection...")
 
