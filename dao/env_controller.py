@@ -24,7 +24,7 @@ class EnvController:
             the_ip = var_ip
 
         try:
-            if(port == 0): print(f'Random port will be assigned.')
+            if(port == 0): print(f'Random port will be assigned to \"{server_name}\".')
             address = (the_ip, the_port)
             new_server = EchoServer(address)
             new_server.run_me()

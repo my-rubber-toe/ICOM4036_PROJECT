@@ -1,0 +1,5 @@
+var1 = "my var"
+info var1
+create server myserver
+create client myclient
+myclient send myserver "Hello there this is the client."
