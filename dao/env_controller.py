@@ -15,20 +15,13 @@ class EnvController:
         
     def create_server(self, server_name, ip, port):
         """Set new server to the environment. If port = 0, then kernel will take care of the port"""
-        var_ip = self.verify_var(ip)
-        var_port = self.verify_var(port)
-
         the_ip = ip
-        the_port = port
+        the_port =port
 
-        if(var_port is None and var_ip is None):
-            the_ip = "localhost"
-            the_port = 0
-        
+        var_ip = self.verify_var(ip)
+
         if(var_ip):
             the_ip = var_ip
-        if(var_port):
-            the_port = var_port
 
         try:
             if(port == 0): print(f'Random port will be assigned.')
