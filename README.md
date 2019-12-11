@@ -19,37 +19,43 @@ members of the team are equally contributing to the project.
 
 # Description
 
-The programming language that we will be building consists of a combination of variable assignments, native functions and object notation similar to `JSON`.
+The programming language that we will be building consists of a combination of variable assignments and declarative language such as `SQL`.
 
-## Variables
+The language will allow to perform basic server connection an sned recieve basic data.
 
-The language will allow users to create simple variables from the following regex `[a-zA-Z_][a-zA-Z_0-9]*`.
+***NOTE: Only basic operations will be made such as, local server to server connection and client connections performing some REST requests.***
 
-## Objects
+# Language Structure
 
-Objects will be used as a method of storing configuration data. They will flow the `JSON` format such as:
+## Tokens
+- Integers
+  - regex: `\d+`
+- String
+  - regex: `duh... a string`
+- Vars
+  - regex: `[a-zA-Z_][a-zA-Z_0-9]*`
+- Keywords
+  - regex: `create|server|client|send|to|all|receive|delete|external|info|from`
+## Grammar
 
-```JavaScript
-{
-    "ip_address": "my_ipaddress",
-    "port": "my_port",
-    "security": {
-        "HTTPS": true,
-        "PRIVATE_NET": true,
-        ...
-    },
-    "type": "my_type"
-    ...
-}
-```
-
-## Native functions
-
-The language will allow to perform `CRUD` operations such as:
-
-1. create_connection()
-2. create_client()
-3. create_server()
-4. update_client()
-5. update_server()
-6. etc...
+## Operations
+- **Create**
+    - `create server myserver "ip_addr" port_nbr`
+    - `create client myclient`
+- **Delete**
+    - `delete server myserver`
+    - `delete client myclient`
+- **Local Connection**
+    - `myclient connect myserver`
+- **External Connection**
+    - `myclient connect "addr_external_server"`
+        - Example: `myclient connect "www.google.com" at port`
+        - Example (default port is 80): `myclient connect "www.google.com"`
+- **Data Processing**
+    - `myserver send myclient "data"`
+- **Info**
+    - `info myserver`
+    - `info myclient`
+- **Variables**
+    - `var1 = "some string"`
+    - `port_number = 1234`
