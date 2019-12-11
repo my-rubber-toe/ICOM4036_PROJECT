@@ -21,23 +21,52 @@ members of the team are equally contributing to the project.
 
 The programming language that we will be building consists of a combination of variable assignments and declarative language such as `SQL`.
 
-The language will allow to perform basic server connection an sned recieve basic data.
+The language will allow to perform basic creation of local servers and allow communication with external servers.
 
-***NOTE: Only basic operations will be made such as, local server to server connection and client connections performing some REST requests.***
+***
+#####NOTES
+
+1. Only basic operations will be made such as, local server to server connections and client connections. External connections will be performing some GET requests.
+
+2. Some operating systems may take longer to close ports. So, if testing is done fast enough error will be thrown.
+***
 
 # Language Structure
 
 ## Tokens
+- Data
+  - regex: `\".*\"`
 - Integers
   - regex: `\d+`
+- Equal
+  - regex: `=`
 - String
-  - regex: `duh... a string`
-- Vars
-  - regex: `[a-zA-Z_][a-zA-Z_0-9]*`
-- Keywords
-  - regex: `create|server|client|send|to|all|receive|delete|external|info|from`
+  - regex: `[a-zA-Z_.-][a-zA-Z0-9_.-]*`
+- Reserverd Keywords
+   ```Javascript
+    {
+        'create' : 'CREATE', 
+        'server' : 'SERVER', 
+        'client' : 'CLIENT', 
+        'delete' : 'DELETE', 
+        'connect' : 'CONNECT', 
+        'send' : 'SEND', 
+        'info' : 'INFO' 
+    }
+  ```
 ## Grammar
-
+```
+statement : CREATE CLIENT STRING | DELETE CLIENT STRING | DELETE SERVER STRING
+statement : CREATE SERVER STRING DATA INT | CREATE SERVER STRING STRING INT | CREATE SERVER STRING
+statement : INFO STRING
+statement : STRING EQUALS DATA | STRING EQUALS INT
+statement : STRING SEND STRING DATA | STRING SEND STRING STRING
+statement : STRING CONNECT STRING | STRING CONNECT DATA
+```
+This grammar could be also represented in a more convenient way using the following sequence:
+```
+statement : CREATE CLIENT STRING | DELETE CLIENT STRING | DELETE SERVER STRING | CREATE SERVER STRING DATA INT | CREATE SERVER STRING STRING INT | CREATE SERVER STRING | INFO STRING | STRING EQUALS DATA | STRING EQUALS INT | STRING SEND STRING DATA | STRING SEND STRING STRING | STRING CONNECT STRING | STRING CONNECT DATA
+```
 ## Operations
 - **Create**
     - `create server myserver "ip_addr" port_nbr`
@@ -49,13 +78,13 @@ The language will allow to perform basic server connection an sned recieve basic
     - `myclient connect myserver`
 - **External Connection**
     - `myclient connect "addr_external_server"`
-        - Example: `myclient connect "www.google.com" at port`
-        - Example (default port is 80): `myclient connect "www.google.com"`
+        - Example: `myclient connect "https://www.google.com"`
+        *NOTE: "https://www.google.com" === "172.217.8.132"*
 - **Data Processing**
-    - `myserver send myclient "data"`
+    - `myclient send myserver "data or message"`
+    - `myserver1 send myserver2 "data or message"`
 - **Info**
     - `info myserver`
     - `info myclient`
 - **Variables**
     - `var1 = "some string"`
-    - `port_number = 1234`
