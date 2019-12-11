@@ -19,7 +19,7 @@ reserved = {
     'info' : 'INFO'
 }
 tokens += reserved.values()
-t_ignore = " \t"
+t_ignore = " \t\n"
 
 def t_DATA(t):
     r"\".*\""
@@ -179,13 +179,26 @@ def p_error(p):
 
 parser = yacc.yacc()
 
-while True:
-    try:
-        s = input(' simply_connected >> ')   # use input() on Python 3
-    except EOFError:
-        break
-    lexer.input(s)
-    # for tok in iter(lexer.token, None):
-    #     # print(repr(tok.type), repr(tok.value))
-    #     print(tok.type, tok.value)
-    parser.parse(s)
+read_file = input('Read from file? (y/N): ')
+
+if(read_file == 'y' or read_file == 'yes'):
+    file_name = input('File name: ')
+    file = open(file_name, 'r')
+    line = file.readline()
+    while(line):
+        # lexer.input(line)
+        parser.parse(line, lexer=lexer)
+        line = file.readline()
+    
+
+else:
+    while True:
+        try:
+            s = input('simply_connected >> ')   # use input() on Python 3
+        except EOFError:
+            break
+        lexer.input(s)
+        # for tok in iter(lexer.token, None):
+        #     # print(repr(tok.type), repr(tok.value))
+        #     print(tok.type, tok.value)
+        parser.parse(s)
