@@ -4,9 +4,10 @@ from dao.env_controller import EnvController
 import re
 
 tokens = [
-    "DATA",
     "INT",
+    "LINK",
     "STRING",
+    "QUOTE",
     "EQUALS"
 ]
 reserved = {
@@ -21,9 +22,6 @@ reserved = {
 tokens += reserved.values()
 t_ignore = " \t"
 
-def t_DATA(t):
-    r"\".*\""
-    return t
 def t_INT(t):
     r"\d+"
     t.value = int(t.value)
@@ -32,11 +30,20 @@ def t_INT(t):
 def t_EQUALS(t):
     r"="
     return t
+def t_QUOTE(t):
+    r"\""
+    return t
+def t_LINK(t):
+    r"(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+"
+    return t
 def t_STRING(t):
-    r"[a-zA-Z_.-][a-zA-Z0-9_.-]*"
+    r"[a-zA-Z_.-](\s?)[a-zA-Z0-9_.-]*"
     if t.value in reserved:
         t.type = reserved[t.value]
     return t
+# def t_SSTRING(t):
+#     r"[a-zA-Z_.-](\s?)[a-zA-Z0-9_.-]*"
+#     return t
 
 def t_error(t):
     print("Illegal character '%s'" % t.value[0])
@@ -78,20 +85,15 @@ def p_statement_create_or_delete_client_server(p):
         print("ERROR in create/delete server or client...")
 
 def p_statement_create_server(p):
-    """statement : CREATE SERVER STRING DATA INT
-                 | CREATE SERVER STRING STRING INT
-                 | CREATE SERVER STRING
+    """statement : CREATE SERVER STRING QUOTE STRING QUOTE INT
+                 | CREATE SERVER STRING QUOTE STRING QUOTE STRING
     """
     if p[1] == "create" and p[2] == "server":
         server_name = p[3]
+        ip = p[5]
+        port = p[7]
         # Run create server here: OK
-
-        length = len(p)
-        if(len(p) == 4):
-            environment.create_server(server_name, "localhost", 0)
-            return
-        environment.create_server(server_name, p[4].replace('"', ''), p[5])
-
+        environment.create_server(server_name, ip, port)
     else:
         print("ERROR in creating server...")
 
@@ -104,23 +106,24 @@ def p_statement_info(p):
     else:
         print("ERROR in getting variable info...")
 
-def p_statement_variable_string(p):
-    'statement : STRING EQUALS DATA'
-    # Run var var assignment here: OK
-    environment.var_assign(p[1], p[3].replace('"', ''))
-
 def p_statement_variable_int(p):
     'statement : STRING EQUALS INT'
     # Run var int assignment here: OK
-    environment.var_assign(p[1], p[3])
+    environment.var_assign(p[1],p[3])
+
+def p_statement_variable_string(p):
+    'statement : STRING EQUALS QUOTE STRING QUOTE'
+
+    # Run var int assignment here: OK
+    environment.var_assign(p[1], p[4])
 
 def p_statement_send_data(p):
-    """statement : STRING SEND STRING DATA
-                 | STRING SEND STRING STRING
-    """
+    'statement : STRING SEND STRING QUOTE STRING QUOTE'
     if p[2] == "send":
-        length = len(p)
-        environment.send_message(p[1], p[3], p[4].replace('"', ''))
+        sender = p[1]
+        reciever = p[3]
+        message = p[5]
+        environment.send_message(sender, reciever, message)
     else:
         print("ERROR in send data...")
 
@@ -142,27 +145,21 @@ def p_statement_local_conn(p):
 #         print("ERROR in external connection...")
 
 def p_statement_external_conn_no_port(p):
-    'statement : STRING CONNECT DATA'
-    if p[2] == "connect" and re.match("https?:\/\/(www\.)?", p[3].replace('"', '')):
+    'statement : STRING CONNECT QUOTE LINK QUOTE'
+    if p[2] == "connect" and re.match("https?:\/\/(www\.)?", p[4]):
         sender = p[1]
         address = p[4]
         environment.connect_external(sender, address)
     else:
         print("ERROR in external connection... did you missed \"http://\" or \"https://\" ?")
 
-# def p_statement_expr(p):
-#     'statement : expression'
+def p_statement_expr(p):
+    'statement : expression'
 
-# def p_expression_string(p):
-#     """expression : STRING expression
-#                   | STRING
-#     """
-
-# def p_expression_int(p):
-#     'expression : INT'
-#     p[0] = p[1]
-#     print(p[0])
-
+def p_expression_int(p):
+    'expression : INT'
+    p[0] = p[1]
+    print(p[0])
 
 # def p_expression_string(p):
 #     'expression : STRING'
@@ -181,11 +178,8 @@ parser = yacc.yacc()
 
 while True:
     try:
-        s = input(' simply_connected >> ')   # use input() on Python 3
+        s = input('simply_connected > ')   # use input() on Python 3
     except EOFError:
         break
     lexer.input(s)
-    # for tok in iter(lexer.token, None):
-    #     # print(repr(tok.type), repr(tok.value))
-    #     print(tok.type, tok.value)
     parser.parse(s)

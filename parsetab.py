@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'CLIENT CONNECT CREATE DELETE EQUALS INFO INT LINK QUOTE SEND SERVER STRINGstatement : CREATE CLIENT STRING\n                 | DELETE CLIENT STRING\n                 | DELETE SERVER STRING\n    statement : CREATE SERVER STRING QUOTE STRING QUOTE INT\n                 | CREATE SERVER STRING STRING INT\n                 | CREATE SERVER STRING\n    statement : INFO STRINGstatement : STRING EQUALS INTstatement : STRING EQUALS QUOTE STRING QUOTEstatement : STRING SEND STRING QUOTE STRING QUOTE\n                 | STRING SEND STRING STRING\n    statement : STRING CONNECT STRINGstatement : STRING CONNECT QUOTE LINK QUOTEstatement : expressionexpression : INT'
+_lr_signature = 'CLIENT CONNECT CREATE DATA DELETE EQUALS INFO INT SEND SERVER STRINGstatement : CREATE CLIENT STRING\n                 | DELETE CLIENT STRING\n                 | DELETE SERVER STRING\n    statement : CREATE SERVER STRING DATA INT\n                 | CREATE SERVER STRING STRING INT\n                 | CREATE SERVER STRING\n    statement : INFO STRINGstatement : STRING EQUALS DATAstatement : STRING EQUALS INTstatement : STRING SEND STRING DATA\n                 | STRING SEND STRING STRING\n    statement : STRING CONNECT STRINGstatement : STRING CONNECT DATA'
     
-_lr_action_items = {'CREATE':([0,],[2,]),'DELETE':([0,],[4,]),'INFO':([0,],[6,]),'STRING':([0,6,8,9,11,12,13,14,17,19,20,26,29,],[3,15,16,17,20,21,23,24,25,27,28,32,34,]),'INT':([0,10,25,36,],[5,18,31,38,]),'$end':([1,5,7,15,16,17,18,21,23,24,28,31,33,35,37,38,],[0,-15,-14,-7,-1,-6,-8,-12,-2,-3,-11,-5,-9,-13,-10,-4,]),'CLIENT':([2,4,],[8,13,]),'SERVER':([2,4,],[9,14,]),'EQUALS':([3,],[10,]),'SEND':([3,],[11,]),'CONNECT':([3,],[12,]),'QUOTE':([10,12,17,20,27,30,32,34,],[19,22,26,29,33,35,36,37,]),'LINK':([22,],[30,]),}
+_lr_action_items = {'CREATE':([0,],[2,]),'DELETE':([0,],[4,]),'INFO':([0,],[5,]),'STRING':([0,5,6,7,9,10,11,12,15,18,],[3,13,14,15,18,19,21,22,23,25,]),'$end':([1,13,14,15,16,17,19,20,21,22,25,26,27,28,],[0,-7,-1,-6,-8,-9,-12,-13,-2,-3,-11,-10,-5,-4,]),'CLIENT':([2,4,],[6,11,]),'SERVER':([2,4,],[7,12,]),'EQUALS':([3,],[8,]),'SEND':([3,],[9,]),'CONNECT':([3,],[10,]),'DATA':([8,10,15,18,],[16,20,24,26,]),'INT':([8,23,24,],[17,27,28,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -17,7 +17,7 @@ for _k, _v in _lr_action_items.items():
       _lr_action[_x][_k] = _y
 del _lr_action_items
 
-_lr_goto_items = {'statement':([0,],[1,]),'expression':([0,],[7,]),}
+_lr_goto_items = {'statement':([0,],[1,]),}
 
 _lr_goto = {}
 for _k, _v in _lr_goto_items.items():
@@ -27,19 +27,17 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> statement","S'",1,None,None,None),
-  ('statement -> CREATE CLIENT STRING','statement',3,'p_statement_create_or_delete_client_server','main.py',61),
-  ('statement -> DELETE CLIENT STRING','statement',3,'p_statement_create_or_delete_client_server','main.py',62),
-  ('statement -> DELETE SERVER STRING','statement',3,'p_statement_create_or_delete_client_server','main.py',63),
-  ('statement -> CREATE SERVER STRING QUOTE STRING QUOTE INT','statement',7,'p_statement_create_server','main.py',85),
-  ('statement -> CREATE SERVER STRING STRING INT','statement',5,'p_statement_create_server','main.py',86),
-  ('statement -> CREATE SERVER STRING','statement',3,'p_statement_create_server','main.py',87),
-  ('statement -> INFO STRING','statement',2,'p_statement_info','main.py',108),
-  ('statement -> STRING EQUALS INT','statement',3,'p_statement_variable_int','main.py',117),
-  ('statement -> STRING EQUALS QUOTE STRING QUOTE','statement',5,'p_statement_variable_string','main.py',122),
-  ('statement -> STRING SEND STRING QUOTE STRING QUOTE','statement',6,'p_statement_send_data','main.py',128),
-  ('statement -> STRING SEND STRING STRING','statement',4,'p_statement_send_data','main.py',129),
-  ('statement -> STRING CONNECT STRING','statement',3,'p_statement_local_conn','main.py',142),
-  ('statement -> STRING CONNECT QUOTE LINK QUOTE','statement',5,'p_statement_external_conn_no_port','main.py',159),
-  ('statement -> expression','statement',1,'p_statement_expr','main.py',168),
-  ('expression -> INT','expression',1,'p_expression_int','main.py',171),
+  ('statement -> CREATE CLIENT STRING','statement',3,'p_statement_create_or_delete_client_server','main.py',65),
+  ('statement -> DELETE CLIENT STRING','statement',3,'p_statement_create_or_delete_client_server','main.py',66),
+  ('statement -> DELETE SERVER STRING','statement',3,'p_statement_create_or_delete_client_server','main.py',67),
+  ('statement -> CREATE SERVER STRING DATA INT','statement',5,'p_statement_create_server','main.py',89),
+  ('statement -> CREATE SERVER STRING STRING INT','statement',5,'p_statement_create_server','main.py',90),
+  ('statement -> CREATE SERVER STRING','statement',3,'p_statement_create_server','main.py',91),
+  ('statement -> INFO STRING','statement',2,'p_statement_info','main.py',112),
+  ('statement -> STRING EQUALS DATA','statement',3,'p_statement_variable_string','main.py',121),
+  ('statement -> STRING EQUALS INT','statement',3,'p_statement_variable_int','main.py',127),
+  ('statement -> STRING SEND STRING DATA','statement',4,'p_statement_send_data','main.py',132),
+  ('statement -> STRING SEND STRING STRING','statement',4,'p_statement_send_data','main.py',133),
+  ('statement -> STRING CONNECT STRING','statement',3,'p_statement_local_conn','main.py',146),
+  ('statement -> STRING CONNECT DATA','statement',3,'p_statement_external_conn_no_port','main.py',163),
 ]
