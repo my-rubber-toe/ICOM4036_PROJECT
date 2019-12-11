@@ -3,32 +3,41 @@ Created by PLY version 3.11 (http://www.dabeaz.com/ply)
 Grammar
 
 Rule 0     S' -> statement
-Rule 1     statement -> KEYWORD KEYWORD STRING
-Rule 2     statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT
-Rule 3     statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING
-Rule 4     statement -> KEYWORD STRING
-Rule 5     statement -> STRING EQUALS INT
-Rule 6     statement -> STRING EQUALS QUOTE STRING QUOTE
-Rule 7     statement -> STRING KEYWORD STRING QUOTE STRING QUOTE
-Rule 8     statement -> STRING KEYWORD STRING
-Rule 9     statement -> STRING KEYWORD QUOTE LINK QUOTE
-Rule 10    statement -> expression
-Rule 11    expression -> INT
-Rule 12    expression -> KEYWORD
+Rule 1     statement -> CREATE CLIENT STRING
+Rule 2     statement -> DELETE CLIENT STRING
+Rule 3     statement -> DELETE SERVER STRING
+Rule 4     statement -> CREATE SERVER STRING QUOTE STRING QUOTE INT
+Rule 5     statement -> CREATE SERVER STRING STRING INT
+Rule 6     statement -> CREATE SERVER STRING
+Rule 7     statement -> INFO STRING
+Rule 8     statement -> STRING EQUALS INT
+Rule 9     statement -> STRING EQUALS QUOTE STRING QUOTE
+Rule 10    statement -> STRING SEND STRING QUOTE STRING QUOTE
+Rule 11    statement -> STRING SEND STRING STRING
+Rule 12    statement -> STRING CONNECT STRING
+Rule 13    statement -> STRING CONNECT QUOTE LINK QUOTE
+Rule 14    statement -> expression
+Rule 15    expression -> INT
 
 Terminals, with rules where they appear
 
-EQUALS               : 5 6
-INT                  : 2 5 11
-KEYWORD              : 1 1 2 2 3 3 4 7 8 9 12
-LINK                 : 9
-QUOTE                : 2 2 3 3 6 6 7 7 9 9
-STRING               : 1 2 2 3 3 3 4 5 6 6 7 7 7 8 8 9
+CLIENT               : 1 2
+CONNECT              : 12 13
+CREATE               : 1 4 5 6
+DELETE               : 2 3
+EQUALS               : 8 9
+INFO                 : 7
+INT                  : 4 5 8 15
+LINK                 : 13
+QUOTE                : 4 4 9 9 10 10 13 13
+SEND                 : 10 11
+SERVER               : 3 4 5 6
+STRING               : 1 2 3 4 4 5 5 6 7 8 9 9 10 10 10 11 11 11 12 12 13
 error                : 
 
 Nonterminals, with rules where they appear
 
-expression           : 10
+expression           : 14
 statement            : 0
 
 Parsing method: LALR
@@ -36,25 +45,30 @@ Parsing method: LALR
 state 0
 
     (0) S' -> . statement
-    (1) statement -> . KEYWORD KEYWORD STRING
-    (2) statement -> . KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT
-    (3) statement -> . KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING
-    (4) statement -> . KEYWORD STRING
-    (5) statement -> . STRING EQUALS INT
-    (6) statement -> . STRING EQUALS QUOTE STRING QUOTE
-    (7) statement -> . STRING KEYWORD STRING QUOTE STRING QUOTE
-    (8) statement -> . STRING KEYWORD STRING
-    (9) statement -> . STRING KEYWORD QUOTE LINK QUOTE
-    (10) statement -> . expression
-    (11) expression -> . INT
-    (12) expression -> . KEYWORD
+    (1) statement -> . CREATE CLIENT STRING
+    (2) statement -> . DELETE CLIENT STRING
+    (3) statement -> . DELETE SERVER STRING
+    (4) statement -> . CREATE SERVER STRING QUOTE STRING QUOTE INT
+    (5) statement -> . CREATE SERVER STRING STRING INT
+    (6) statement -> . CREATE SERVER STRING
+    (7) statement -> . INFO STRING
+    (8) statement -> . STRING EQUALS INT
+    (9) statement -> . STRING EQUALS QUOTE STRING QUOTE
+    (10) statement -> . STRING SEND STRING QUOTE STRING QUOTE
+    (11) statement -> . STRING SEND STRING STRING
+    (12) statement -> . STRING CONNECT STRING
+    (13) statement -> . STRING CONNECT QUOTE LINK QUOTE
+    (14) statement -> . expression
+    (15) expression -> . INT
 
-    KEYWORD         shift and go to state 2
+    CREATE          shift and go to state 2
+    DELETE          shift and go to state 4
+    INFO            shift and go to state 6
     STRING          shift and go to state 3
-    INT             shift and go to state 4
+    INT             shift and go to state 5
 
     statement                      shift and go to state 1
-    expression                     shift and go to state 5
+    expression                     shift and go to state 7
 
 state 1
 
@@ -64,202 +78,285 @@ state 1
 
 state 2
 
-    (1) statement -> KEYWORD . KEYWORD STRING
-    (2) statement -> KEYWORD . KEYWORD STRING QUOTE STRING QUOTE INT
-    (3) statement -> KEYWORD . KEYWORD STRING QUOTE STRING QUOTE STRING
-    (4) statement -> KEYWORD . STRING
-    (12) expression -> KEYWORD .
+    (1) statement -> CREATE . CLIENT STRING
+    (4) statement -> CREATE . SERVER STRING QUOTE STRING QUOTE INT
+    (5) statement -> CREATE . SERVER STRING STRING INT
+    (6) statement -> CREATE . SERVER STRING
 
-    KEYWORD         shift and go to state 6
-    STRING          shift and go to state 7
-    $end            reduce using rule 12 (expression -> KEYWORD .)
+    CLIENT          shift and go to state 8
+    SERVER          shift and go to state 9
 
 
 state 3
 
-    (5) statement -> STRING . EQUALS INT
-    (6) statement -> STRING . EQUALS QUOTE STRING QUOTE
-    (7) statement -> STRING . KEYWORD STRING QUOTE STRING QUOTE
-    (8) statement -> STRING . KEYWORD STRING
-    (9) statement -> STRING . KEYWORD QUOTE LINK QUOTE
+    (8) statement -> STRING . EQUALS INT
+    (9) statement -> STRING . EQUALS QUOTE STRING QUOTE
+    (10) statement -> STRING . SEND STRING QUOTE STRING QUOTE
+    (11) statement -> STRING . SEND STRING STRING
+    (12) statement -> STRING . CONNECT STRING
+    (13) statement -> STRING . CONNECT QUOTE LINK QUOTE
 
-    EQUALS          shift and go to state 8
-    KEYWORD         shift and go to state 9
+    EQUALS          shift and go to state 10
+    SEND            shift and go to state 11
+    CONNECT         shift and go to state 12
 
 
 state 4
 
-    (11) expression -> INT .
+    (2) statement -> DELETE . CLIENT STRING
+    (3) statement -> DELETE . SERVER STRING
 
-    $end            reduce using rule 11 (expression -> INT .)
+    CLIENT          shift and go to state 13
+    SERVER          shift and go to state 14
 
 
 state 5
 
-    (10) statement -> expression .
+    (15) expression -> INT .
 
-    $end            reduce using rule 10 (statement -> expression .)
+    $end            reduce using rule 15 (expression -> INT .)
 
 
 state 6
 
-    (1) statement -> KEYWORD KEYWORD . STRING
-    (2) statement -> KEYWORD KEYWORD . STRING QUOTE STRING QUOTE INT
-    (3) statement -> KEYWORD KEYWORD . STRING QUOTE STRING QUOTE STRING
+    (7) statement -> INFO . STRING
 
-    STRING          shift and go to state 10
+    STRING          shift and go to state 15
 
 
 state 7
 
-    (4) statement -> KEYWORD STRING .
+    (14) statement -> expression .
 
-    $end            reduce using rule 4 (statement -> KEYWORD STRING .)
+    $end            reduce using rule 14 (statement -> expression .)
 
 
 state 8
 
-    (5) statement -> STRING EQUALS . INT
-    (6) statement -> STRING EQUALS . QUOTE STRING QUOTE
-
-    INT             shift and go to state 11
-    QUOTE           shift and go to state 12
-
-
-state 9
-
-    (7) statement -> STRING KEYWORD . STRING QUOTE STRING QUOTE
-    (8) statement -> STRING KEYWORD . STRING
-    (9) statement -> STRING KEYWORD . QUOTE LINK QUOTE
-
-    STRING          shift and go to state 13
-    QUOTE           shift and go to state 14
-
-
-state 10
-
-    (1) statement -> KEYWORD KEYWORD STRING .
-    (2) statement -> KEYWORD KEYWORD STRING . QUOTE STRING QUOTE INT
-    (3) statement -> KEYWORD KEYWORD STRING . QUOTE STRING QUOTE STRING
-
-    $end            reduce using rule 1 (statement -> KEYWORD KEYWORD STRING .)
-    QUOTE           shift and go to state 15
-
-
-state 11
-
-    (5) statement -> STRING EQUALS INT .
-
-    $end            reduce using rule 5 (statement -> STRING EQUALS INT .)
-
-
-state 12
-
-    (6) statement -> STRING EQUALS QUOTE . STRING QUOTE
+    (1) statement -> CREATE CLIENT . STRING
 
     STRING          shift and go to state 16
 
 
+state 9
+
+    (4) statement -> CREATE SERVER . STRING QUOTE STRING QUOTE INT
+    (5) statement -> CREATE SERVER . STRING STRING INT
+    (6) statement -> CREATE SERVER . STRING
+
+    STRING          shift and go to state 17
+
+
+state 10
+
+    (8) statement -> STRING EQUALS . INT
+    (9) statement -> STRING EQUALS . QUOTE STRING QUOTE
+
+    INT             shift and go to state 18
+    QUOTE           shift and go to state 19
+
+
+state 11
+
+    (10) statement -> STRING SEND . STRING QUOTE STRING QUOTE
+    (11) statement -> STRING SEND . STRING STRING
+
+    STRING          shift and go to state 20
+
+
+state 12
+
+    (12) statement -> STRING CONNECT . STRING
+    (13) statement -> STRING CONNECT . QUOTE LINK QUOTE
+
+    STRING          shift and go to state 21
+    QUOTE           shift and go to state 22
+
+
 state 13
 
-    (7) statement -> STRING KEYWORD STRING . QUOTE STRING QUOTE
-    (8) statement -> STRING KEYWORD STRING .
+    (2) statement -> DELETE CLIENT . STRING
 
-    QUOTE           shift and go to state 17
-    $end            reduce using rule 8 (statement -> STRING KEYWORD STRING .)
+    STRING          shift and go to state 23
 
 
 state 14
 
-    (9) statement -> STRING KEYWORD QUOTE . LINK QUOTE
+    (3) statement -> DELETE SERVER . STRING
 
-    LINK            shift and go to state 18
+    STRING          shift and go to state 24
 
 
 state 15
 
-    (2) statement -> KEYWORD KEYWORD STRING QUOTE . STRING QUOTE INT
-    (3) statement -> KEYWORD KEYWORD STRING QUOTE . STRING QUOTE STRING
+    (7) statement -> INFO STRING .
 
-    STRING          shift and go to state 19
+    $end            reduce using rule 7 (statement -> INFO STRING .)
 
 
 state 16
 
-    (6) statement -> STRING EQUALS QUOTE STRING . QUOTE
+    (1) statement -> CREATE CLIENT STRING .
 
-    QUOTE           shift and go to state 20
+    $end            reduce using rule 1 (statement -> CREATE CLIENT STRING .)
 
 
 state 17
 
-    (7) statement -> STRING KEYWORD STRING QUOTE . STRING QUOTE
+    (4) statement -> CREATE SERVER STRING . QUOTE STRING QUOTE INT
+    (5) statement -> CREATE SERVER STRING . STRING INT
+    (6) statement -> CREATE SERVER STRING .
 
-    STRING          shift and go to state 21
+    QUOTE           shift and go to state 26
+    STRING          shift and go to state 25
+    $end            reduce using rule 6 (statement -> CREATE SERVER STRING .)
 
 
 state 18
 
-    (9) statement -> STRING KEYWORD QUOTE LINK . QUOTE
+    (8) statement -> STRING EQUALS INT .
 
-    QUOTE           shift and go to state 22
+    $end            reduce using rule 8 (statement -> STRING EQUALS INT .)
 
 
 state 19
 
-    (2) statement -> KEYWORD KEYWORD STRING QUOTE STRING . QUOTE INT
-    (3) statement -> KEYWORD KEYWORD STRING QUOTE STRING . QUOTE STRING
+    (9) statement -> STRING EQUALS QUOTE . STRING QUOTE
 
-    QUOTE           shift and go to state 23
+    STRING          shift and go to state 27
 
 
 state 20
 
-    (6) statement -> STRING EQUALS QUOTE STRING QUOTE .
+    (10) statement -> STRING SEND STRING . QUOTE STRING QUOTE
+    (11) statement -> STRING SEND STRING . STRING
 
-    $end            reduce using rule 6 (statement -> STRING EQUALS QUOTE STRING QUOTE .)
+    QUOTE           shift and go to state 29
+    STRING          shift and go to state 28
 
 
 state 21
 
-    (7) statement -> STRING KEYWORD STRING QUOTE STRING . QUOTE
+    (12) statement -> STRING CONNECT STRING .
 
-    QUOTE           shift and go to state 24
+    $end            reduce using rule 12 (statement -> STRING CONNECT STRING .)
 
 
 state 22
 
-    (9) statement -> STRING KEYWORD QUOTE LINK QUOTE .
+    (13) statement -> STRING CONNECT QUOTE . LINK QUOTE
 
-    $end            reduce using rule 9 (statement -> STRING KEYWORD QUOTE LINK QUOTE .)
+    LINK            shift and go to state 30
 
 
 state 23
 
-    (2) statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE . INT
-    (3) statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE . STRING
+    (2) statement -> DELETE CLIENT STRING .
 
-    INT             shift and go to state 26
-    STRING          shift and go to state 25
+    $end            reduce using rule 2 (statement -> DELETE CLIENT STRING .)
 
 
 state 24
 
-    (7) statement -> STRING KEYWORD STRING QUOTE STRING QUOTE .
+    (3) statement -> DELETE SERVER STRING .
 
-    $end            reduce using rule 7 (statement -> STRING KEYWORD STRING QUOTE STRING QUOTE .)
+    $end            reduce using rule 3 (statement -> DELETE SERVER STRING .)
 
 
 state 25
 
-    (3) statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING .
+    (5) statement -> CREATE SERVER STRING STRING . INT
 
-    $end            reduce using rule 3 (statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING .)
+    INT             shift and go to state 31
 
 
 state 26
 
-    (2) statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT .
+    (4) statement -> CREATE SERVER STRING QUOTE . STRING QUOTE INT
 
-    $end            reduce using rule 2 (statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT .)
+    STRING          shift and go to state 32
+
+
+state 27
+
+    (9) statement -> STRING EQUALS QUOTE STRING . QUOTE
+
+    QUOTE           shift and go to state 33
+
+
+state 28
+
+    (11) statement -> STRING SEND STRING STRING .
+
+    $end            reduce using rule 11 (statement -> STRING SEND STRING STRING .)
+
+
+state 29
+
+    (10) statement -> STRING SEND STRING QUOTE . STRING QUOTE
+
+    STRING          shift and go to state 34
+
+
+state 30
+
+    (13) statement -> STRING CONNECT QUOTE LINK . QUOTE
+
+    QUOTE           shift and go to state 35
+
+
+state 31
+
+    (5) statement -> CREATE SERVER STRING STRING INT .
+
+    $end            reduce using rule 5 (statement -> CREATE SERVER STRING STRING INT .)
+
+
+state 32
+
+    (4) statement -> CREATE SERVER STRING QUOTE STRING . QUOTE INT
+
+    QUOTE           shift and go to state 36
+
+
+state 33
+
+    (9) statement -> STRING EQUALS QUOTE STRING QUOTE .
+
+    $end            reduce using rule 9 (statement -> STRING EQUALS QUOTE STRING QUOTE .)
+
+
+state 34
+
+    (10) statement -> STRING SEND STRING QUOTE STRING . QUOTE
+
+    QUOTE           shift and go to state 37
+
+
+state 35
+
+    (13) statement -> STRING CONNECT QUOTE LINK QUOTE .
+
+    $end            reduce using rule 13 (statement -> STRING CONNECT QUOTE LINK QUOTE .)
+
+
+state 36
+
+    (4) statement -> CREATE SERVER STRING QUOTE STRING QUOTE . INT
+
+    INT             shift and go to state 38
+
+
+state 37
+
+    (10) statement -> STRING SEND STRING QUOTE STRING QUOTE .
+
+    $end            reduce using rule 10 (statement -> STRING SEND STRING QUOTE STRING QUOTE .)
+
+
+state 38
+
+    (4) statement -> CREATE SERVER STRING QUOTE STRING QUOTE INT .
+
+    $end            reduce using rule 4 (statement -> CREATE SERVER STRING QUOTE STRING QUOTE INT .)
 

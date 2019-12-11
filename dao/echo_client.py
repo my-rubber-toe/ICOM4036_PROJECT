@@ -29,10 +29,12 @@ class EchoClient:
     def send_message(self, message, server: EchoServer):
         try:
             self.logger.debug(f'sending message to server={server.server_id}, message={message}')
+
+            self.connection_history.append(server.server_id.__str__())
+
             ip, port = server.server_address
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))
-            self.connection_history.append(server.server_id)
             sock.sendall(bytes(message,'ascii'))
             print(f'Client({self.client_id}): {message}')
             response = str(sock.recv(1024), 'ascii')

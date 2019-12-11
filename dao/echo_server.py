@@ -27,6 +27,7 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
         self.server_id = uuid.uuid4()
         self.logger = logging.getLogger(f'EchoServer({self.server_id})')
         self.logger.debug(f'server created ip={self.server_address[0]} port={self.server_address[1]}')
+        self.connection_history = []
         self.is_running = False
     
     def finish_request(self, request, client_address):
@@ -46,14 +47,13 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
         self.shutdown()
         self.server_close()
     
-    def connect_peer(self, peer):
-        """Establish a connection with a peer server"""
-        pass
-
     def message_peer(self, message, peer):
         """Send message to a peer server"""
         try:
             self.logger.debug(f'sending message to peer={peer.server_id}, message={message}')
+
+            self.connection_history.append(peer.server_id.__str__())
+            
             ip, port = peer.server_address
             sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             sock.connect((ip, port))
@@ -68,8 +68,9 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
     def send_external(self, external_address):
         self.logger.debug(f'connecting to {external_address}')
         req = requests.get(url=external_address)
+        self.connection_history.append(external_address)
         print(f'Response from {external_address}: {req.status_code}')
 
     def __repr__(self):
         ip, port = self.server_address
-        return f'EchoServer<server_id={self.server_id}, ip={ip}, port={port}>'
+        return f'EchoServer<server_id={self.server_id}, ip={ip}, port={port}, connection_history={self.connection_history}>'
