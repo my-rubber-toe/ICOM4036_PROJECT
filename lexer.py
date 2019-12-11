@@ -3,23 +3,29 @@ import ply.lex as lex
 from dao.env_controller import EnvController
 import re
 
-tokens = (
+tokens = [
     "INT",
     "LINK",
     "STRING",
     "QUOTE",
-    "EQUALS",
-    "KEYWORD"
-)
+    "EQUALS"
+]
+reserved = {
+    'create' : 'CREATE',
+    'server' : 'SERVER',
+    'client' : 'CLIENT',
+    'delete' : 'DELETE',
+    'connect' : 'CONNECT',
+    'send' : 'SEND',
+    'info' : 'INFO'
+}
+tokens += reserved.values()
 t_ignore = " \t"
 
 def t_INT(t):
     r"\d+"
     t.value = int(t.value)
     # Check Port --> Min Port: 1024, Max Port: 65535, Port: 0 Kernel will auto assign port
-    return t
-def t_KEYWORD(t):
-    r"create|server|client|send|connect|at|to|all|receive|delete|external|info|from"
     return t
 def t_EQUALS(t):
     r"="
@@ -32,6 +38,8 @@ def t_LINK(t):
     return t
 def t_STRING(t):
     r"[a-zA-Z_.-][a-zA-Z0-9_.-]*"
+    if t.value in reserved:
+        t.type = reserved[t.value]
     return t
 
 def t_error(t):
@@ -50,7 +58,10 @@ variables = { }
 environment = EnvController()
 
 def p_statement_create_or_delete_client_server(p):
-    'statement : KEYWORD KEYWORD STRING'
+    """statement : CREATE CLIENT STRING
+                 | DELETE CLIENT STRING
+                 | DELETE SERVER STRING
+    """
     if p[1] == "delete":
         if p[2] == "client":
             client_name = p[3]
@@ -71,8 +82,8 @@ def p_statement_create_or_delete_client_server(p):
         print("ERROR in create/delete server or client...")
 
 def p_statement_create_server(p):
-    """statement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT
-                 | KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING
+    """statement : CREATE SERVER STRING QUOTE STRING QUOTE INT
+                 | CREATE SERVER STRING QUOTE STRING QUOTE STRING
     """
     if p[1] == "create" and p[2] == "server":
         server_name = p[3]
@@ -84,7 +95,7 @@ def p_statement_create_server(p):
         print("ERROR in creating server...")
 
 def p_statement_info(p):
-    'statement : KEYWORD STRING'
+    'statement : INFO STRING'
     if p[1] == "info":
         # Run info here: OK
         variable = p[2]
@@ -99,12 +110,12 @@ def p_statement_variable_int(p):
 
 def p_statement_variable_string(p):
     'statement : STRING EQUALS QUOTE STRING QUOTE'
-    
+
     # Run var int assignment here: OK
     environment.var_assign(p[1], p[4])
 
 def p_statement_send_data(p):
-    'statement : STRING KEYWORD STRING QUOTE STRING QUOTE'
+    'statement : STRING SEND STRING QUOTE STRING QUOTE'
     if p[2] == "send":
         sender = p[1]
         reciever = p[3]
@@ -114,7 +125,7 @@ def p_statement_send_data(p):
         print("ERROR in send data...")
 
 def p_statement_local_conn(p):
-    'statement : STRING KEYWORD STRING'
+    'statement : STRING CONNECT STRING'
     if p[2] == "connect":
         sender = p[1]
         receiver = p[3]
@@ -131,7 +142,7 @@ def p_statement_local_conn(p):
 #         print("ERROR in external connection...")
 
 def p_statement_external_conn_no_port(p):
-    'statement : STRING KEYWORD QUOTE LINK QUOTE'
+    'statement : STRING CONNECT QUOTE LINK QUOTE'
     if p[2] == "connect" and re.match("https?:\/\/(www\.)?", p[4]):
         sender = p[1]
         address = p[4]
@@ -144,11 +155,6 @@ def p_statement_expr(p):
 
 def p_expression_int(p):
     'expression : INT'
-    p[0] = p[1]
-    print(p[0])
-
-def p_expression_keyword(p):
-    'expression : KEYWORD'
     p[0] = p[1]
     print(p[0])
 
