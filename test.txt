@@ -1,5 +1,39 @@
-var1 = "my var"
-info var1
-create server myserver
-create client myclient
-myclient send myserver "Hello there this is the client."
+external_address = "http://www.google.com"
+message = "Hi, I am the message."
+internal_address = "127.0.0.1"
+local_server = "localhost"
+
+create server server1
+create server server2 "localhost" 4321
+create server server3 local_server 9876
+
+create client client1
+create client client2
+create client client3
+
+client1 connect server1
+server1 connect server2
+
+client1 connect "http://www.google.com"
+client1 connect external_address
+server1 connect external_address
+
+client1 send server1 "This is a typed message."
+client2 send server2 "This is another typed message."
+client3 send server3 message
+
+server1 send server2 "This is a peer to peer message."
+
+
+info server1
+info client1
+info message
+
+
+delete server1
+delete server2
+delete server3
+
+delete client1
+delete client2
+delete client3

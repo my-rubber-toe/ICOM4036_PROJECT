@@ -50,7 +50,7 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
     def message_peer(self, message, peer):
         """Send message to a peer server"""
         try:
-            self.logger.debug(f'sending message to peer={peer.server_id}, message={message}')
+            self.logger.debug(f'sending message to peer={peer.server_id}, message=\"{message}\"')
 
             self.connection_history.append(peer.server_id.__str__())
             
