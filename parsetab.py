@@ -6,9 +6,9 @@ _tabversion = '3.10'
 
 _lr_method = 'LALR'
 
-_lr_signature = 'EQUALS INT KEYWORD QUOTE STRINGstatement : KEYWORD KEYWORD STRINGstatement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT\n                 | KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING\n    statement : KEYWORD STRINGstatement : STRING EQUALS INTstatement : STRING EQUALS QUOTE STRING QUOTEstatement : STRING KEYWORD STRING QUOTE STRING QUOTEstatement : STRING KEYWORD STRINGstatement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INTstatement : STRING KEYWORD QUOTE STRING QUOTEstatement : expressionexpression : INTexpression : KEYWORDexpression : STRING'
+_lr_signature = 'EQUALS INT KEYWORD LINK QUOTE STRINGstatement : KEYWORD KEYWORD STRINGstatement : KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT\n                 | KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING\n    statement : KEYWORD STRINGstatement : STRING EQUALS INTstatement : STRING EQUALS QUOTE STRING QUOTEstatement : STRING KEYWORD STRING QUOTE STRING QUOTEstatement : STRING KEYWORD STRINGstatement : STRING KEYWORD QUOTE LINK QUOTEstatement : expressionexpression : INTexpression : KEYWORD'
     
-_lr_action_items = {'KEYWORD':([0,2,3,22,],[2,6,9,25,]),'STRING':([0,2,6,9,12,14,15,17,23,],[3,7,10,13,16,18,19,21,26,]),'INT':([0,8,23,25,],[4,11,27,28,]),'$end':([1,2,3,4,5,7,10,11,13,20,22,24,26,27,28,],[0,-13,-14,-12,-11,-4,-1,-5,-8,-6,-10,-7,-3,-2,-9,]),'EQUALS':([3,],[8,]),'QUOTE':([8,9,10,13,16,18,19,21,],[12,14,15,17,20,22,23,24,]),}
+_lr_action_items = {'KEYWORD':([0,2,3,],[2,6,9,]),'STRING':([0,2,6,9,12,15,17,23,],[3,7,10,13,16,19,21,25,]),'INT':([0,8,23,],[4,11,26,]),'$end':([1,2,4,5,7,10,11,13,20,22,24,25,26,],[0,-12,-11,-10,-4,-1,-5,-8,-6,-9,-7,-3,-2,]),'EQUALS':([3,],[8,]),'QUOTE':([8,9,10,13,16,18,19,21,],[12,14,15,17,20,22,23,24,]),'LINK':([14,],[18,]),}
 
 _lr_action = {}
 for _k, _v in _lr_action_items.items():
@@ -27,18 +27,16 @@ for _k, _v in _lr_goto_items.items():
 del _lr_goto_items
 _lr_productions = [
   ("S' -> statement","S'",1,None,None,None),
-  ('statement -> KEYWORD KEYWORD STRING','statement',3,'p_statement_create_or_delete_client_server','lexer.py',48),
-  ('statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT','statement',7,'p_statement_create_server','lexer.py',69),
-  ('statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING','statement',7,'p_statement_create_server','lexer.py',70),
-  ('statement -> KEYWORD STRING','statement',2,'p_statement_info','lexer.py',82),
-  ('statement -> STRING EQUALS INT','statement',3,'p_statement_variable_int','lexer.py',91),
-  ('statement -> STRING EQUALS QUOTE STRING QUOTE','statement',5,'p_statement_variable_string','lexer.py',96),
-  ('statement -> STRING KEYWORD STRING QUOTE STRING QUOTE','statement',6,'p_statement_send_data','lexer.py',102),
-  ('statement -> STRING KEYWORD STRING','statement',3,'p_statement_local_conn','lexer.py',109),
-  ('statement -> STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT','statement',7,'p_statement_external_conn','lexer.py',116),
-  ('statement -> STRING KEYWORD QUOTE STRING QUOTE','statement',5,'p_statement_external_conn_no_port','lexer.py',123),
-  ('statement -> expression','statement',1,'p_statement_expr','lexer.py',130),
-  ('expression -> INT','expression',1,'p_expression_int','lexer.py',135),
-  ('expression -> KEYWORD','expression',1,'p_expression_keyword','lexer.py',140),
-  ('expression -> STRING','expression',1,'p_expression_string','lexer.py',145),
+  ('statement -> KEYWORD KEYWORD STRING','statement',3,'p_statement_create_or_delete_client_server','lexer.py',53),
+  ('statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE INT','statement',7,'p_statement_create_server','lexer.py',74),
+  ('statement -> KEYWORD KEYWORD STRING QUOTE STRING QUOTE STRING','statement',7,'p_statement_create_server','lexer.py',75),
+  ('statement -> KEYWORD STRING','statement',2,'p_statement_info','lexer.py',87),
+  ('statement -> STRING EQUALS INT','statement',3,'p_statement_variable_int','lexer.py',96),
+  ('statement -> STRING EQUALS QUOTE STRING QUOTE','statement',5,'p_statement_variable_string','lexer.py',101),
+  ('statement -> STRING KEYWORD STRING QUOTE STRING QUOTE','statement',6,'p_statement_send_data','lexer.py',107),
+  ('statement -> STRING KEYWORD STRING','statement',3,'p_statement_local_conn','lexer.py',117),
+  ('statement -> STRING KEYWORD QUOTE LINK QUOTE','statement',5,'p_statement_external_conn_no_port','lexer.py',134),
+  ('statement -> expression','statement',1,'p_statement_expr','lexer.py',143),
+  ('expression -> INT','expression',1,'p_expression_int','lexer.py',146),
+  ('expression -> KEYWORD','expression',1,'p_expression_keyword','lexer.py',151),
 ]

@@ -4,6 +4,7 @@ import socketserver
 import uuid
 import socket
 import threading
+import requests
 
 logging.basicConfig(filename= "env_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
 
@@ -63,6 +64,11 @@ class EchoServer(socketserver.ThreadingMixIn,socketserver.TCPServer):
             self.logger.debug(f'recieved response from peer={peer.server_id}, response={response}')
         except:
             print(f'Unable to send message to {peer}')
+    
+    def send_external(self, external_address):
+        self.logger.debug(f'connecting to {external_address}')
+        req = requests.get(url=external_address)
+        print(f'Response from {external_address}: {req.status_code}')
 
     def __repr__(self):
         ip, port = self.server_address

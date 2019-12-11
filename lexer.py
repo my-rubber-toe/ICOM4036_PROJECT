@@ -1,9 +1,11 @@
 import ply.yacc as yacc
 import ply.lex as lex
 from dao.env_controller import EnvController
+import re
 
 tokens = (
     "INT",
+    "LINK",
     "STRING",
     "QUOTE",
     "EQUALS",
@@ -24,6 +26,9 @@ def t_EQUALS(t):
     return t
 def t_QUOTE(t):
     r"\""
+    return t
+def t_LINK(t):
+    r"(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+"
     return t
 def t_STRING(t):
     r"[a-zA-Z_.-][a-zA-Z0-9_.-]*"
@@ -105,54 +110,56 @@ def p_statement_send_data(p):
         reciever = p[3]
         message = p[5]
         environment.send_message(sender, reciever, message)
-        print("Sending %s '%s' from %s..." % (p[3], p[5], p[1]))
     else:
         print("ERROR in send data...")
 
 def p_statement_local_conn(p):
     'statement : STRING KEYWORD STRING'
     if p[2] == "connect":
-        print("Connecting %s to %s..." % (p[1], p[3]))
+        sender = p[1]
+        receiver = p[3]
+        message = "PING PING PING..."
+        environment.send_message(sender, receiver, message)
     else:
         print("ERROR in local connection...")
 
-def p_statement_external_conn(p):
-    'statement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT'
-    if p[2] == "connect":
-        print("Connecting %s to %s:%d..." % (p[1], p[4],p[7]))
-    else:
-        print("ERROR in external connection...")
+# def p_statement_external_conn(p):
+#     'statement : STRING KEYWORD QUOTE STRING QUOTE KEYWORD INT'
+#     if p[2] == "connect":
+#         print("Connecting %s to %s:%d..." % (p[1], p[4],p[7]))
+#     else:
+#         print("ERROR in external connection...")
 
 def p_statement_external_conn_no_port(p):
-    'statement : STRING KEYWORD QUOTE STRING QUOTE'
-    if p[2] == "connect":
-        print("Connecting %s to %s:80..." % (p[1], p[4]))
+    'statement : STRING KEYWORD QUOTE LINK QUOTE'
+    if p[2] == "connect" and re.match("https?:\/\/(www\.)?", p[4]):
+        sender = p[1]
+        address = p[4]
+        environment.connect_external(sender, address)
     else:
-        print("ERROR in external connection...")
+        print("ERROR in external connection... did you missed \"http://\" or \"https://\" ?")
 
 def p_statement_expr(p):
     'statement : expression'
-    print(p[1])
-    print("in expr")
 
 def p_expression_int(p):
     'expression : INT'
     p[0] = p[1]
-    print("in int")
+    print(p[0])
 
 def p_expression_keyword(p):
     'expression : KEYWORD'
     p[0] = p[1]
-    print("in keyword")
+    print(p[0])
 
-def p_expression_string(p):
-    'expression : STRING'
-    try:
-        p[0] = variables[p[1]]
-        print("in string")
-    except LookupError:
-        print("Undefined string '%s'" % p[1])
-        p[0] = 0
+# def p_expression_string(p):
+#     'expression : STRING'
+#     try:
+#         p[0] = variables[p[1]]
+#         print("in string")
+#     except LookupError:
+#         print("Undefined string '%s'" % p[1])
+#         p[0] = 0
 
 def p_error(p):
     if p is not None:

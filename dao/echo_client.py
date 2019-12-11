@@ -2,6 +2,7 @@ import logging
 import uuid
 from dao.echo_server import EchoServer
 import socket
+import requests
 
 
 logging.basicConfig(filename= "env_logs.log",level=logging.DEBUG,format='%(name)s: %(message)s',)
@@ -16,6 +17,14 @@ class EchoClient:
     
     def info(self):
         return self.__repr__()
+    
+    def send_external(self, external_address):
+
+        self.logger.debug(f'connecting to {external_address}')
+        req = requests.get(url=external_address)
+        print(f'Response from {external_address}: {req.status_code}')
+        self.connection_history.append(external_address)
+
 
     def send_message(self, message, server: EchoServer):
         try:

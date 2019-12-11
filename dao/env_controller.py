@@ -29,7 +29,7 @@ class EnvController:
             the_ip = var_ip
         if(var_port):
             the_port = var_port
-            
+
         try:
             if(port == 0): print(f'Random port will be assigned.')
             address = (the_ip, the_port)
@@ -101,16 +101,19 @@ class EnvController:
         else:
             print(f'ERROR: Unrecognized variable: {var_name}')
     
-    def connect_external(self, var):
-        var_value = self.verify_var(var)
-        if(not var_value): # If there is not a variable
-            self.logger.debug(f'connecting to {var}')
-            req = requests.get(url=var)
-            print(f'Response from {var}: {req.status_code}')
+    def connect_external(self, sender, external_address):
+
+        the_sender = self.verify_var(sender)
+        the_external_address = external_address
+
+        tmp_var = self.verify_var(external_address)
+        if(isinstance(tmp_var, str)):
+            the_external_address = tmp_var
+            
+        if(isinstance(the_sender, (EchoClient, EchoServer))):
+            the_sender.send_external(external_address)
         else:
-            self.logger.debug(f'connecting to {var_value}')
-            req = requests.get(url=var_value)
-            print(f'Response from {var_value}: {req.status_code}')
+            print(f'ERROR: Variable is not type \"EchoServer\" or \"EchoClient\"')
 
 
     def verify_var(self, var):
