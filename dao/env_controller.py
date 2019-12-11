@@ -24,7 +24,6 @@ class EnvController:
             the_ip = var_ip
 
         try:
-            if(port == 0): print(f'Random port will be assigned to \"{server_name}\".')
             address = (the_ip, the_port)
             new_server = EchoServer(address)
             new_server.run_me()
@@ -49,11 +48,11 @@ class EnvController:
         if(isinstance(value, EchoServer)):
             value.stop_me()
             removed_server = self.env.pop(var_name)
-            self.logger.debug(f'server removed server_id={removed_server.server_id}')
+            self.logger.debug(f'server removed: server_id={removed_server.server_id}')
             return removed_server
         elif(isinstance(value, EchoClient)):
             removed_client = self.env.pop(var_name)
-            self.logger.debug(f'client removed client_id={removed_client.client_id}')
+            self.logger.debug(f'client removed: client_id={removed_client.client_id}')
             return removed_client
         elif(isinstance(value, (int, str))):
             print(f'ERROR: Variable {var_name} is not of type: \"EchoServer\" or \"EchoClient\" ')
@@ -95,6 +94,7 @@ class EnvController:
             print(f'ERROR: Unrecognized variable: {var_name}')
     
     def connect_external(self, sender, external_address):
+        print(external_address)
 
         the_sender = self.verify_var(sender)
         the_external_address = external_address

@@ -28,7 +28,7 @@ class EchoClient:
 
     def send_message(self, message, server: EchoServer):
         try:
-            self.logger.debug(f'sending message to server={server.server_id}, message={message}')
+            self.logger.debug(f'sending message to server={server.server_id}, message=\"{message}\"')
 
             self.connection_history.append(server.server_id.__str__())
 
