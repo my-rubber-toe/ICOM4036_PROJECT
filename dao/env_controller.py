@@ -94,7 +94,6 @@ class EnvController:
             print(f'ERROR: Unrecognized variable: {var_name}')
     
     def connect_external(self, sender, external_address):
-        print(external_address)
 
         the_sender = self.verify_var(sender)
         the_external_address = external_address

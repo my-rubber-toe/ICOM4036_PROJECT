@@ -119,6 +119,10 @@ def p_statement_local_conn(p):
     if p[2] == "connect":
         sender = p[1]
         receiver = p[3]
+        value = environment.verify_var(receiver)
+        if re.match("http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/", value.__str__()):
+            environment.connect_external(sender, value)
+            return      
         message = "PING PING PING..."
         environment.send_message(sender, receiver, message)
     else:
@@ -135,7 +139,7 @@ def p_statement_external_conn_no_port(p):
     'statement : STRING CONNECT DATA'
     if p[2] == "connect" and re.match("https?:\/\/(www\.)?", p[3].replace('"', '')):
         sender = p[1]
-        address = p[3]
+        address = p[3].replace('"', '')
         environment.connect_external(sender, address)
     else:
         print("ERROR in external connection... did you missed \"http://\" or \"https://\" ?")
